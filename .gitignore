@@ -1,1 +1,3 @@
 data/motley-fool-data.pkl
+.env
+data/raw
