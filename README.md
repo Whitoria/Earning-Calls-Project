@@ -25,6 +25,7 @@ Since analysts already did the hard work of crunching the numbers, we can try an
 
 ## Financial Data:
 - Tiingo
+- S&P 500 Stock Prices 2000 - 2026 (https://www.kaggle.com/datasets/jacksaleeby/s-and-p500-historical-data)
 - Kaggle Stock prices (https://www.kaggle.com/datasets/tsaustin/us-historical-stock-prices-with-earnings-data)
 - yearly/quarterly financial data from EDGAR SEC 10K/10Q/8K (https://www.sec.gov/search-filings)
 - Live stock prices from Alpha Vantage API (https://www.alphavantage.co/documentation/)
