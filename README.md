@@ -15,24 +15,26 @@ Since analysts already did the hard work of crunching the numbers, we can try an
 
 
 ## Sentiment/Language Data
-- Transcripts from Company Earning Calls from:
+### Transcripts from Company Earning Calls:
 - AlphaVantage's API (https://www.alphavantage.co/documentation/)
-- Github repo (https://github.com/Earnings-Call-Dataset/MAEC-A-Multimodal-Aligned-Earnings-Conference-Call-Dataset-for-Financial-Risk-Prediction)
-### Management analysis from:
+- Earnings Call Transcripts Github Repo (https://github.com/Earnings-Call-Dataset/MAEC-A-Multimodal-Aligned-Earnings-Conference-Call-Dataset-for-Financial-Risk-Prediction)
+- Earnings Call Transcripts (https://github.com/defeat-beta/defeatbeta-api?tab=readme-ov-file)
+### Management Analysis/Transcripts from:
 - EDGAR SEC 10K/10Q/8K (https://www.sec.gov/search-filings)
 ### Cultural context:
 - News score from AlphaVantage's API
 
 ## Financial Data:
-- Tiingo
-- S&P 500 Stock Prices 2000 - 2026 (https://www.kaggle.com/datasets/jacksaleeby/s-and-p500-historical-data)
+- Stock Prices from Tiingo (https://www.tiingo.com/documentation/general/connecting)
+- S&P 500 Stock Prices 2000 - 2026 Kaggle (https://www.kaggle.com/datasets/jacksaleeby/s-and-p500-historical-data)
 - Kaggle Stock prices (https://www.kaggle.com/datasets/tsaustin/us-historical-stock-prices-with-earnings-data)
-- yearly/quarterly financial data from EDGAR SEC 10K/10Q/8K (https://www.sec.gov/search-filings)
-- Live stock prices from Alpha Vantage API (https://www.alphavantage.co/documentation/)
+- Yearly/quarterly financial data from EDGAR SEC 10K/10Q/8K (https://www.sec.gov/search-filings)
+- Transcripts, News Scores, and Market Cap (Company Overview) from Alpha Vantage API (https://www.alphavantage.co/documentation/)
 
 
 ## Model:
 Train on a finetuned FinBERT model, NLP model for financial language.
+Train multiple models on companies separated into groups by size. But for now, just start with all companies on S&P 500
 
 
 ## Status
