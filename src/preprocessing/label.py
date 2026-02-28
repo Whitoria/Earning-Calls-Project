@@ -107,3 +107,31 @@ def label_by_returns(df: pd.DataFrame, days_after: int = 1, prices_dir: str = "d
     logger.info(f"Return thresholds: negative < {low:.3f} < neutral < {high:.3f} < positive")
     logger.info(f"Label distribution:\n{df['label'].value_counts()}")
     return df
+
+def main(args):
+    df = pd.read_csv(args.input)
+    logger.info(f"Loaded {len(df)} rows from {args.input}")
+    
+    if args.method == "returns":
+        df = label_by_returns(df, days_after=args.days_after, prices_dir=args.prices_dir)
+    else:
+        raise ValueError(f"Unknown method: {args.method}")
+    
+    if df.empty:
+        logger.error("No labeled data produced.")
+        return
+    
+    Path(args.output).parent.mkdir(parents=True, exist_ok=True)
+    df.to_csv(args.output, index=False)
+    logger.info(f"Saved labeled data to {args.output}")
+
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--input",      required=True,              help="Input CSV from scrape_transcripts.py")
+    parser.add_argument("--output",     required=True,              help="Output labeled CSV")
+    parser.add_argument("--method",     default="returns",          choices=["returns", "finbert"])
+    parser.add_argument("--prices_dir", default="data/prices",      help="Directory of Tiingo CSVs, one per ticker (e.g. data/prices/AAPL.csv)")
+    parser.add_argument("--days_after", type=int, default=1,        help="Trading days after call to measure return (returns method only)")
+    args = parser.parse_args()
+    main(args)
