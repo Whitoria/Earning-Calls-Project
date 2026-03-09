@@ -1,7 +1,8 @@
 # Local/Remote specific data
 data/motley-fool-data.pkl
 .env
-data/raw
+data
+*.db
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
