@@ -1,0 +1,61 @@
+File Name,Total Rows in File,Total Cols in File,Column Name,Data Type,Non-Null Count,Sample Categories / Value
+cleaned_section_text.parquet,726,10,ticker,str,726,NVDA | AAPL | MSFT | AVGO | TSLA | BRK-B | LLY
+cleaned_section_text.parquet,726,10,cik,str,726,0001045810
+cleaned_section_text.parquet,726,10,filing_type,str,726,10-K | 10-Q
+cleaned_section_text.parquet,726,10,accession_number,str,726,000104581026000021
+cleaned_section_text.parquet,726,10,date,str,726,2026-02-25
+cleaned_section_text.parquet,726,10,url,str,726,https://www.sec.gov/Archives/edgar/data/1045810/000104581026000021/nvda-20260125.htm
+cleaned_section_text.parquet,726,10,section_name,str,726,Item 1: Business | Item 1A: Risk Factors | Item 1B: Unresolved Staff Comments | Item 2: Properties | Item 3: Legal Proceedings | Item 4: Mine Safety Disclosures | Item 5: Market for Common Equity | Item 7: MD&A | Item 7A: Quantitative Disclosures | Item 8: Financial Statements | Item 9: Changes in Accountants | Item 9A: Controls and Procedures | Item 9B: Other Information | Item 10: Directors and Officers | Item 11: Executive Compensation | Item 12: Security Ownership | Item 13: Certain Relationships | Item 14: Principal Accountant Fees | Item 15: Exhibits and Schedules | Item 1 (Q): Financial Statements | Item 2 (Q): MD&A | Item 3 (Q): Quantitative Disclosures | Item 4 (Q): Controls and Procedures | Item 1 (Q-II): Legal Proceedings | Item 1A (Q-II): Risk Factors | Item 5 (Q-II): Other Information | Item 2 (Q-II): Unregistered Sales | Item 3 (Q-II): Defaults Upon Senior Securities | Item 4 (Q-II): Mine Safety Disclosures | Item 6 (Q): Exhibits
+cleaned_section_text.parquet,726,10,section_text,str,726,"Item 1. BusinessOur CompanyNVIDIA pioneered accelerated computing to help solve the most challenging computational problems. NVIDIA is now a data center scale AI infrastructure company reshaping all industries.Our technology stack includes the foundational NVIDIA CUDA development platform that runs on all NVIDIA GPUs, as well as hundreds of domain-specific software libraries, frameworks, algorithms, software development kits, or SDKs, and application programming interfaces, or APIs. This deep an... [Text truncated for CSV readability]"
+cleaned_section_text.parquet,726,10,cleaned_text_raw,str,726,Item 1. BusinessOur CompanyNVIDIA pioneered accelerated computing to help solve the most challenging computational problems. NVIDIA is now a data center scale AI infrastructure company reshaping all industries.Our technology stack includes the foundational NVIDIA CUDA development platform that runs on all NVIDIA GPUs as well as hundreds of domain specific software libraries frameworks algorithms software development kits or SDKs and application programming interfaces or APIs. This deep and broad... [Text truncated for CSV readability]
+cleaned_section_text.parquet,726,10,processed_text,str,726,item 1. businessour companynvidia pioneered accelerated computing help solve challenging computational problems. nvidia data center scale ai infrastructure company reshaping industries.our technology stack includes foundational nvidia cuda development platform run nvidia gpus well hundred domain specific software library framework algorithm software development kit sdks application programming interface apis. deep broad software stack accelerates performance facilitates deployment nvidia acceler... [Text truncated for CSV readability]
+nlp_metrics.parquet,726,16,ticker,str,726,NVDA | AAPL | MSFT | AVGO | TSLA | BRK-B | LLY
+nlp_metrics.parquet,726,16,date,str,726,2026-02-25
+nlp_metrics.parquet,726,16,filing_type,str,726,10-K | 10-Q
+nlp_metrics.parquet,726,16,section_name,str,726,Item 1: Business | Item 1A: Risk Factors | Item 1B: Unresolved Staff Comments | Item 2: Properties | Item 3: Legal Proceedings | Item 4: Mine Safety Disclosures | Item 5: Market for Common Equity | Item 7: MD&A | Item 7A: Quantitative Disclosures | Item 8: Financial Statements | Item 9: Changes in Accountants | Item 9A: Controls and Procedures | Item 9B: Other Information | Item 10: Directors and Officers | Item 11: Executive Compensation | Item 12: Security Ownership | Item 13: Certain Relationships | Item 14: Principal Accountant Fees | Item 15: Exhibits and Schedules | Item 1 (Q): Financial Statements | Item 2 (Q): MD&A | Item 3 (Q): Quantitative Disclosures | Item 4 (Q): Controls and Procedures | Item 1 (Q-II): Legal Proceedings | Item 1A (Q-II): Risk Factors | Item 5 (Q-II): Other Information | Item 2 (Q-II): Unregistered Sales | Item 3 (Q-II): Defaults Upon Senior Securities | Item 4 (Q-II): Mine Safety Disclosures | Item 6 (Q): Exhibits
+nlp_metrics.parquet,726,16,word_count,float64,726,6001.0
+nlp_metrics.parquet,726,16,sentence_count,float64,726,179.0
+nlp_metrics.parquet,726,16,avg_sentence_length,float64,726,33.52513966480447
+nlp_metrics.parquet,726,16,vocab_size,float64,726,1638.0
+nlp_metrics.parquet,726,16,type_token_ratio,float64,726,0.2729545075820696
+nlp_metrics.parquet,726,16,readability_flesch,float64,726,20.529713571967108
+nlp_metrics.parquet,726,16,readability_fog,float64,726,20.166184050088567
+nlp_metrics.parquet,726,16,positive_score,float64,726,0.0024995834027662055
+nlp_metrics.parquet,726,16,negative_score,float64,726,0.004832527912014664
+nlp_metrics.parquet,726,16,polarity_score,float64,726,-0.3181818109504134
+nlp_metrics.parquet,726,16,forward_looking_score,float64,726,0.002666222296283953
+nlp_metrics.parquet,726,16,risk_density,float64,726,0.16663889351774705
+keyword_year_table.parquet,4,2,year,int32,4,2023
+keyword_year_table.parquet,4,2,top_keywords,str,4,"store, vehicle, percent, condensed, ip, jardiance, cloud, app, automotive, architecture, musk, underwriting"
+financial_growth_metrics.parquet,147,8,ticker,str,147,AAPL | AMZN | AVGO | BRK-B | GOOGL | LLY | META | MSFT | NVDA | TSLA
+financial_growth_metrics.parquet,147,8,reported_date,datetime64[us],147,2022-06-30 00:00:00
+financial_growth_metrics.parquet,147,8,Gross Profit,float64,114,35885000000.0
+financial_growth_metrics.parquet,147,8,Operating Income,float64,114,23076000000.0
+financial_growth_metrics.parquet,147,8,Total Revenue,float64,123,82959000000.0
+financial_growth_metrics.parquet,147,8,Gross Profit_YoY_Growth,float64,76,0.014713668663787205
+financial_growth_metrics.parquet,147,8,Operating Income_YoY_Growth,float64,76,-0.0033801352054082523
+financial_growth_metrics.parquet,147,8,Total Revenue_YoY_Growth,float64,81,-0.014006919080509661
+correlated_data.parquet,294,24,ticker,str,294,AAPL | AMZN | AVGO | BRK-B | GOOGL | LLY | META | MSFT | NVDA | TSLA
+correlated_data.parquet,294,24,date,datetime64[us],294,2023-11-03 00:00:00
+correlated_data.parquet,294,24,filing_type,str,294,10-K | 10-Q
+correlated_data.parquet,294,24,section_name,str,294,MD&A | Risk Factors | Forward-Looking Statements
+correlated_data.parquet,294,24,word_count,float64,294,33.0
+correlated_data.parquet,294,24,sentence_count,float64,294,0.0
+correlated_data.parquet,294,24,avg_sentence_length,float64,294,0.0
+correlated_data.parquet,294,24,vocab_size,float64,294,0.0
+correlated_data.parquet,294,24,type_token_ratio,float64,294,0.0
+correlated_data.parquet,294,24,readability_flesch,float64,294,0.0
+correlated_data.parquet,294,24,readability_fog,float64,294,0.0
+correlated_data.parquet,294,24,positive_score,float64,294,0.0
+correlated_data.parquet,294,24,negative_score,float64,294,0.0
+correlated_data.parquet,294,24,polarity_score,float64,294,0.0
+correlated_data.parquet,294,24,forward_looking_score,float64,294,0.0
+correlated_data.parquet,294,24,risk_density,float64,294,0.0
+correlated_data.parquet,294,24,filed,datetime64[us],294,2023-11-03 00:00:00
+correlated_data.parquet,294,24,form,str,294,10-K
+correlated_data.parquet,294,24,EarningsPerShareDiluted,float64,264,6.13
+correlated_data.parquet,294,24,NetIncomeLoss,float64,267,96995000000.0
+correlated_data.parquet,294,24,Revenues,float64,129,177896000000.0
+correlated_data.parquet,294,24,NetIncomeLoss_growth,float64,257,0.0
+correlated_data.parquet,294,24,Revenues_growth,float64,124,0.0
+correlated_data.parquet,294,24,EarningsPerShareDiluted_growth,float64,255,0.0

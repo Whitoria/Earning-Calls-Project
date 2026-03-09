@@ -21,7 +21,7 @@ Since analysts already did the hard work of crunching the numbers, we can try an
 ### Management Analysis/Transcripts from:
 - EDGAR SEC 10K/10Q/8K (https://www.sec.gov/search-filings)
 ### Cultural context:
-- News score from AlphaVantage's API
+- News score from AlphaVantage's API?
 
 ## Financial Data:
 - Stock Prices from Tiingo (https://www.tiingo.com/documentation/general/connecting)
