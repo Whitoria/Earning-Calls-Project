@@ -9,8 +9,8 @@ from datetime import datetime
 # Setup paths
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 RAW_DIR = os.path.join(BASE_DIR, 'data', 'raw')
-DB_PATH = os.path.join(BASE_DIR, 'data', 'earnings_calls.db')
-TICKERS_CSV = os.path.join(BASE_DIR, 'sp500.csv')  # Path to your CSV
+DB_PATH = os.path.join(BASE_DIR, 'data', 'new_earnings_calls.db')
+TICKERS_CSV = os.path.join(BASE_DIR, 'S&P500_Ticker.csv')  # Path to your CSV
 
 # Create directories if they don't exist
 os.makedirs(RAW_DIR, exist_ok=True)
