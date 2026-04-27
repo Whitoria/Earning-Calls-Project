@@ -1,114 +1,108 @@
+import pandas as pd
 import re
-import sqlite3
-import json
-from typing import Dict, List
 
+INPUT_FILE = "data/finbert_scores.csv"
+OUTPUT_FILE = "data/call_features.csv"
 
-class TranscriptProcessor:
-    """Process earnings call transcripts"""
+FORWARD_LOOKING_PATTERNS = [
+    # Future tense
+    r"will\s+\w+",
+    r"(shall|would)\s+\w+",
 
-    def __init__(self):
-        self.speaker_pattern = r"([A-Z][a-z]+ [A-Z][a-z]+):"
+    # Core forward-looking verbs (handles all inflections in one pattern)
+    r"(expect|anticipate|believe|estimate|forecast|project|predict|intend|plan|aim|seek|target|assume|endeavor)\w*\s+(to|that|a|an|the|\w+)",
 
-    def process(self, raw_transcript: str, ticker: str, event_date: str) -> Dict:
-        parsed = self.parse_transcript(raw_transcript)
+    # We + verb constructions
+    r"we\s+(expect|believe|anticipate|plan|intend|aim|target|remain|feel|are)\w*",
 
-        return {
-            "ticker": ticker,
-            "event_date": event_date,
-            "prepared_remarks": parsed["prepared_remarks"],
-            "qa_section": parsed["qa_section"],
-            "speakers": parsed["speakers"],
-            "management_tone": parsed["management_tone"],
-            "forward_looking_statements": parsed["forward_looking_statements"]
-        }
+    # Modals scoped to outcome verbs
+    r"(may|might|could|should)\s+(result|lead|cause|impact|contribute|enable|create|generate|increase|decrease|improve|expand|grow|deliver|drive)\w*",
 
-    def parse_transcript(self, transcript_text: str) -> Dict:
-        sections = self._split_into_sections(transcript_text)
-        speakers = self._extract_speakers(transcript_text)
+    # Planning / progress
+    r"(plan|intend|aim|seek|look|work|target)\w*\s+to\w*",
+    r"on\s+track\s+to",
+    r"(well[- ]positioned|poised)\s+to",
 
-        return {
-            "prepared_remarks": sections.get("prepared_remarks", ""),
-            "qa_section": sections.get("qa", ""),
-            "speakers": speakers,
-            "management_tone": self._analyze_management_tone(sections),
-            "forward_looking_statements": self._extract_forward_looking(transcript_text)
-        }
+    # Time horizon references
+    r"(going|looking)\s+forward",
+    r"(next|upcoming|coming|future)\s+(quarter|year|fiscal|month|period|cycle|years?)",
+    r"(long|near|medium)[- ]term\s+(growth|outlook|target|goal|strategy|objective)",
+    r"over\s+the\s+(next|coming)\s+\w+",
+    r"by\s+(fiscal|year[- ]end|\d{4}|the\s+end)",
 
-    def _split_into_sections(self, text: str) -> Dict[str, str]:
-        qa_start = text.lower().find("question-and-answer")
+    # Confidence / momentum
+    r"(remain|are|feel|stay)\s+(confident|optimistic|committed|focused|on\s+track)",
+    r"(strong|solid|robust|healthy)\s+(pipeline|demand|momentum|outlook|backlog)",
+    r"(continue|continuing|continued)\s+to\s+\w+",
 
-        if qa_start == -1:
-            qa_start = text.lower().find("q&a")
+    # Conditional
+    r"(assuming|subject\s+to|contingent\s+(on|upon)|based\s+on\s+current|provided\s+that)\s+\w+",
 
-        if qa_start != -1:
-            return {
-                "prepared_remarks": text[:qa_start],
-                "qa": text[qa_start:]
-            }
+    # Loughran-McDonald growth/execution verbs
+    r"(drive|enable|scale|ramp|launch|deploy|expand|grow|deliver|monetize|transition)\w*\s+(growth|revenue|value|margin|adoption|to|into|\w+)",
+    ]
 
-        return {"prepared_remarks": text, "qa": ""}
+SPEAKER_PATTERN = r"([A-Z][a-z]+ [A-Z][a-z]+):"
 
-    def _extract_speakers(self, text: str) -> List[str]:
-        speakers = re.findall(self.speaker_pattern, text)
-        return list(set(speakers))
+def is_forward_looking(text: str) -> bool:
+    return any(re.search(p, str(text), re.IGNORECASE) for p in FORWARD_LOOKING_PATTERNS)
 
-    def _analyze_management_tone(self, sections: Dict) -> float:
-        return 0.5  # placeholder
+def build_call_features(df: pd.DataFrame) -> pd.DataFrame:
+    df = df.sort_values(['transcript_id', 'sentence_idx'])
 
-    def _extract_forward_looking(self, text: str) -> List[str]:
-        forward_keywords = [
-            "expect", "anticipate", "believe", "forecast",
-            "guidance", "outlook", "plan", "intend"
-        ]
+    # Vectorized Q&A split — avoids heavy groupby apply on 13M rows
+    df['is_forward_looking'] = df['text'].apply(is_forward_looking)
+    
+    counts = df.groupby('transcript_id')['sentence_idx'].transform('count')
+    rank   = df.groupby('transcript_id')['sentence_idx'].rank(method='first')
+    df['is_qa'] = rank / counts > 0.6
 
-        sentences = text.split(".")
-        forward_looking = []
+    prepared = df[~df['is_qa']]
+    qa        = df[df['is_qa']]
 
-        for sentence in sentences:
-            if any(keyword in sentence.lower() for keyword in forward_keywords):
-                forward_looking.append(sentence.strip())
+    # Core aggregates
+    base = df.groupby('transcript_id').agg(
+        ticker=('ticker', 'first'),
+        fiscal_year=('fiscal_year', 'first'),
+        fiscal_quarter=('fiscal_quarter', 'first'),
+        report_date=('report_date', 'first'),
+        company_id=('company_id', 'first'),
+        mean_pos=('finbert_conf_pos', 'mean'),
+        mean_neg=('finbert_conf_neg', 'mean'),
+        mean_neu=('finbert_conf_neu', 'mean'),
+        std_pos=('finbert_conf_pos', 'std'),
+        std_neg=('finbert_conf_neg', 'std'),
+        neg_spike_count=('finbert_conf_neg', lambda x: (x > 0.6).sum()),
+        sentence_count=('sentence_idx', 'count'),
+        forward_looking_count=('is_forward_looking', 'sum'),
+    ).reset_index()
 
-        return forward_looking[:10]
+    base['forward_looking_ratio'] = base['forward_looking_count'] / base['sentence_count']
 
+    prep_pos = prepared.groupby('transcript_id')['finbert_conf_pos'].mean().rename('prep_mean_pos')
+    prep_neg = prepared.groupby('transcript_id')['finbert_conf_neg'].mean().rename('prep_mean_neg')
+    qa_pos   = qa.groupby('transcript_id')['finbert_conf_pos'].mean().rename('qa_mean_pos')
+    qa_neg   = qa.groupby('transcript_id')['finbert_conf_neg'].mean().rename('qa_mean_neg')
 
-def process_database(db_path: str, output_file: str):
+    base = base.join(prep_pos, on='transcript_id')
+    base = base.join(prep_neg, on='transcript_id')
+    base = base.join(qa_pos,   on='transcript_id')
+    base = base.join(qa_neg,   on='transcript_id')
 
-    conn = sqlite3.connect(db_path)
-    cursor = conn.cursor()
+    base['qa_sentiment_drop'] = base['prep_mean_pos'] - base['qa_mean_pos']
+    base['qa_neg_increase']   = base['qa_mean_neg']   - base['prep_mean_neg']
 
-    processor = TranscriptProcessor()
+    base = base.sort_values(['ticker', 'fiscal_year', 'fiscal_quarter'])
+    base['sentiment_vs_prior'] = (
+        base.groupby('ticker')['mean_pos']
+            .transform(lambda x: (x - x.shift(1).expanding().mean()) / (x.shift(1).expanding().std() + 1e-6))
+    )
 
-    results = []
-
-    cursor.execute("""
-        SELECT ticker, report_date, transcript_text
-        FROM transcripts
-    """)
-
-    rows = cursor.fetchall()
-
-    for ticker, date, text in rows:
-
-        result = processor.process(
-            raw_transcript=text,
-            ticker=ticker,
-            event_date=date
-        )
-
-        results.append(result)
-
-    conn.close()
-
-    with open(output_file, "w") as f:
-        json.dump(results, f, indent=2)
-
-    print(f"Processed {len(results)} transcripts")
-
+    return base
 
 if __name__ == "__main__":
-
-    DATABASE_PATH = "data/earnings_calls.db"
-    OUTPUT_FILE = "data/processed_transcripts.json"
-
-    process_database(DATABASE_PATH, OUTPUT_FILE)
+    df = pd.read_csv(INPUT_FILE)
+    features = build_call_features(df)
+    features.to_csv(OUTPUT_FILE, index=False)
+    print(f"Saved {len(features)} call-level rows to {OUTPUT_FILE}")
+    print(features.head())
